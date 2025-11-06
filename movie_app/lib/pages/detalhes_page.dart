@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/favoritos_service.dart';
 
 class DetalhesPage extends StatelessWidget {
   final Map filme;
@@ -9,8 +10,12 @@ class DetalhesPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(filme['title']),
+        title: Text(
+          filme['title'],
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white), // deixa seta de voltar branca
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -57,8 +62,12 @@ class DetalhesPage extends StatelessWidget {
 
                   // Botão Favoritar
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // Vamos implementar já já
+                    onPressed: () async {
+                      await FavoritosService.salvarFavorito(filme);
+                      print("Filme salvo: ${filme['title']}");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Adicionado aos favoritos!")),
+                      );
                     },
                     icon: Icon(Icons.favorite, color: Colors.white),
                     label: Text("Adicionar aos Favoritos"),

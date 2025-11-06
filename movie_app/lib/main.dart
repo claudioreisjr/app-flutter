@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/filmes_page.dart';
+import 'pages/favoritos_page.dart';
 
 void main() {
   runApp(MeuApp());
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   final telas = [
     FilmesPage(),
-    Center(child: Text("Favoritos")),
+    FavoritosPage(),
   ];
 
   @override
