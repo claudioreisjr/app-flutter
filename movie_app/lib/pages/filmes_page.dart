@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import 'package:movie_app/pages/detalhes_page.dart';
+
 
 class FilmesPage extends StatefulWidget {
   @override
@@ -15,10 +17,16 @@ class _FilmesPageState extends State<FilmesPage> {
     carregarFilmes();
   }
 
+  int pagina = 1;
+
   carregarFilmes() async {
-    final dados = await ApiService.getFilmes();
+    final dados = await ApiService.getFilmes(pagina);
+
+    dados.sort((a, b) => (b['vote_average']).compareTo(a['vote_average'])); // ordena desc
+
     setState(() {
-      filmes = dados;
+      filmes.addAll(dados);
+      pagina++;
     });
   }
 
@@ -31,13 +39,24 @@ class _FilmesPageState extends State<FilmesPage> {
           : ListView.builder(
               itemCount: filmes.length,
               itemBuilder: (context, index) {
+                 if (index == filmes.length - 1) {
+                  carregarFilmes(); // carrega mais filmes ao chegar no final da lista
+                 }
                 final filme = filmes[index];
                 return ListTile(
-                  leading: Image.network(
-                    "https://image.tmdb.org/t/p/w200${filme['poster_path']}",
-                  ),
-                  title: Text(filme['title']),
-                  subtitle: Text("Nota: ${filme['vote_average']}"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DetalhesPage(filme),
+                        ),
+                      );
+                    },
+                    leading: Image.network(
+                      "https://image.tmdb.org/t/p/w200${filme['poster_path']}",
+                    ),
+                    title: Text(filme['title']),
+                    subtitle: Text("Nota: ${filme['vote_average']}"),
                 );
               },
             ),
